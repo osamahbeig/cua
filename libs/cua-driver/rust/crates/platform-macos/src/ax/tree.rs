@@ -33,7 +33,9 @@ pub const DEFAULT_MAX_DEPTH: usize = 25;
 ///
 /// Callers can override per-call via `walk_tree`'s `max_elements` parameter
 /// (issue #22865).
-pub const DEFAULT_MAX_ELEMENTS: usize = 2_000;
+// Local build: raised from 2 000. Real Chrome windows put the tab strip after the web content,
+// so a 2 000 cap silently drops it (Gmail alone is ~2 400 nodes). The walk is still bounded.
+pub const DEFAULT_MAX_ELEMENTS: usize = 8_000;
 
 /// Bound each native AX request. Tokio cannot cancel a blocked
 /// `AXUIElementCopyAttributeValue` after `spawn_blocking` starts, so the native
