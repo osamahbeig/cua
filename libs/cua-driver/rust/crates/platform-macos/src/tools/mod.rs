@@ -430,7 +430,12 @@ async fn focused_element_holds_point(
             };
             let rect = crate::ax::bindings::element_screen_rect(focused);
             let focused_window = if require_window {
-                crate::ax::exact_target::element_window_id(focused)
+                // Sheet backport (#3353): prove ancestry instead of reading one
+                // window id, so a field inside an AXSheet counts for its parent window.
+                match crate::ax::exact_target::element_window_ancestry(focused, wid) {
+                    cua_driver_core::background_input::ElementAncestry::ProvenDescendant => Some(wid),
+                    _ => None,
+                }
             } else {
                 Some(wid)
             };
